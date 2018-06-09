@@ -96,10 +96,13 @@ def borrarAlumnoCurso(tableName, curso, listaFaceIds):
 
 def comprarConColleccion(curso, imageFile):
     # Pasar imagen a blob
-    image = Image.open(imageFile)
+    
+    image = imageFile
+    
     stream = io.BytesIO()
     image.save(stream, format = 'JPEG')
     encodedimg = stream.getvalue()
+    
 
     # Conseguir las cajas envolvientes de cada cara detectada
     response = rekognition.detect_faces(Image={'Bytes': encodedimg})
