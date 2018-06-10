@@ -102,8 +102,6 @@ def comprarConColleccion(curso, imageFile):
     stream = io.BytesIO()
     image.save(stream, format = 'JPEG')
     encodedimg = stream.getvalue()
-    
-
     # Conseguir las cajas envolvientes de cada cara detectada
     response = rekognition.detect_faces(Image={'Bytes': encodedimg})
     allFaces = response['FaceDetails']

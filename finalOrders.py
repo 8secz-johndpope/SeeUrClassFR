@@ -5,12 +5,12 @@ import datetime
 import rekogOrders as r
 import s3Orders as s
 import dynamoDBOrders as d
-import save_table_db as save
+import class_table_managment as ctm
 
 
 def agregarDetalles(nombre):
     nombre = nombre.lower().replace(' ','_')
-    nombre = 'alumno_'+nombre.lower()+'.jpg'
+    nombre = 'alumno_' + nombre.lower() + '.jpg'
     return nombre
 
 
@@ -33,10 +33,9 @@ def pruebaRevisarFoto(table, curso, imageFile):
                     'hora': hora_1,
                     'rekog_value': valor
                     }
-            save.save_asistance_register(data)
-            print(data)
+            ctm.save_asistance_register(data)
     else:
-        print('No hubo coincidencia alguna')
+        print('No hubo coincidencia')
 
    
 def pruebaBorrar(table, curso, listaAlumnos):
@@ -63,7 +62,7 @@ def pruebaAgregarAlCurso(table, curso, listaAlumnos):
 if __name__ == "__main__":
     table = 'testtic3v2'
     curso = 'tics3'
-    path = './'+curso+'/'
+    path = './' + curso + '/'
     #path = './respaldo_imagees/tics3/'
     valid_images = [".jpg"]
     lista_archivos = os.listdir(path)
