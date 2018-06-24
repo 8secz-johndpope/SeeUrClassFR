@@ -6,25 +6,13 @@ from s3Orders import conseguirNombreS3
 from dynamoDBOrders import actualizarIndex, conseguirNombreDynamo
 rekognition = boto3.client('rekognition','us-west-2')
 
-def crearCurso(curso):
-    '''
-    collectionsCheck = rekognition.list_collections()
-    print(collectionsCheck['CollectionIds'])
-
-    if (len(collectionsCheck['CollectionIds']) == 0 or curso not in collectionsCheck['CollectionIds']):
-        response = rekognition.create_collection(CollectionId=curso)
-        print('Curso ' + curso + ' creado.')
-    else:
-        print('Curso ' + curso + ' ya existe de antemano.')
-    
-    return
-    '''
+def create_class(class_name):
     try:
-        response = rekognition.create_collection(CollectionId=curso)
-        print('Curso ' + curso + ' creado.')
+        response = rekognition.create_collection(CollectionId=class_name)
+        print('Curso ' + class_name + ' creado.')
     except Exception as e:
         print(e)
-        print('Curso ' + curso + ' ya existe de antemano.')
+        print('Curso ' + class_name + ' ya existe de antemano.')
 
 
 def retornarCurso(curso, tableName ='testtic3v2'):
@@ -42,16 +30,6 @@ def retornarCurso(curso, tableName ='testtic3v2'):
 
 
 def borrarCurso(curso):
-    '''
-    collectionsCheck = rekognition.list_collections()
-    #print(collectionsCheck['CollectionIds'])
-
-    if (len(collectionsCheck['CollectionIds']) != 0 and curso in collectionsCheck['CollectionIds']):
-        response = rekognition.delete_collection(CollectionId=curso)
-        print('Curso ' + curso + ' eliminado!')
-    else:
-        print('La tabla ' + curso + ' no existe!')
-    '''
     try:
         response = rekognition.delete_collection(CollectionId=curso)
         print('Curso ' + curso + ' eliminado!')
@@ -65,16 +43,15 @@ def agregarAlumnoCurso(tableName, curso, nombreAlumno):
         CollectionId=curso,
         Image={
             'S3Object': {
-                'Bucket': tableName, # testtic3v2
-                'Name': nombreAlumno # Key del objeto S3 (alumno_nombre_apellido.jpg)
+                'Bucket': tableName, # institution name
+                'Name': nombreAlumno # Key del objeto S3 (alumno_nombre_apellido.png)
             }
         }
-    )['FaceRecords'][0]['Face']['FaceId'] # Especifico que solo quiero el Face ID de la primera cara que reconozca
-    
+    ) # Especifico que solo quiero el Face ID de la primera cara que reconozca
+    FID = faceID['FaceRecords'][0]['Face']['FaceId']
     # Crea relacion Curso-Alumno por FaceId y Nombre Completo
     personFullName = conseguirNombreS3(tableName, nombreAlumno) # Entrega el valor 
-    actualizarIndex(tableName,faceID,personFullName)
-
+    actualizarIndex(tableName, FID, personFullName)
     print('Alumno ' + personFullName + ' agregado al curso ' + curso)
     return
 

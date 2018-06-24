@@ -1,6 +1,7 @@
 import boto3
 import io
 from PIL import Image
+import re
 
 from dynamoDBOrders import borrarRelacion
 s3 = boto3.client('s3')
@@ -25,22 +26,27 @@ def conseguirNombreS3(tableName, key):
     return response['Metadata']['fullname']
 
 
-def agregarAlumnoS3(bucket, imagenEntrada):
+def pars_name(text):
+    regex = r'_[a-z]*_[a-z]*'
+    result = re.findall(regex, text)
+    result_key = result[0][1:]
+    result_meta = result_key.replace('_', ' ').title()
+    return result_key, result_meta
+
+
+def add_student_s3(bucket, imagenEntrada):
     imagen = Image.open(imagenEntrada)
     stream = io.BytesIO()
     imagen.save(stream, format = 'JPEG')
     imagenCodificado = stream.getvalue()
-
-    nombreCompleto = imagenEntrada[17:-4].replace('_',' ').title()
-    print(nombreCompleto)
-
+    key, meta = pars_name(imagenEntrada)
     s3.put_object(
         Body = imagenCodificado,
         Bucket = bucket,
         ContentType = 'image/jpeg',
-        Key = imagenEntrada[10:],
+        Key = key,
         Metadata={
-            'fullname': nombreCompleto
+            'fullname': meta
         }
     )
 

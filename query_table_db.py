@@ -1,4 +1,4 @@
-from __future__ import print_function  # Python 2/3 compatibility
+from __future__ import print_function
 import boto3
 from boto3.dynamodb.conditions import Key, Attr
 
@@ -10,4 +10,4 @@ def consult_asistance():
     print(items)
 
 
-consult_asistance()
+#consult_asistance()
