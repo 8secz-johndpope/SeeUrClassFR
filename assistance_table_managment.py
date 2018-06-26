@@ -34,10 +34,10 @@ def create_table_class_assistance(class_name):
     print("Table status:", table.table_status)
 
 
-def get_name(institution_bucket, face_id):
+def get_name(class_name, face_id):
     dynamodb = boto3.resource('dynamodb')
     response = dynamodb.get_item(
-        TableName=institution_bucket,
+        TableName=class_name,
         Key={
             'RekognitionId': {
                 'S': face_id,
@@ -51,7 +51,7 @@ def get_name(institution_bucket, face_id):
 def create_class_table(class_name):
     dynamodb = boto3.resource('dynamodb')
     check_table = dynamodb.list_tables()
-    print(class_name, check_table['TableNames'])
+    #print(class_name, check_table['TableNames']) era para debug, ya no se necesita
 
     if len(check_table['TableNames']) == 0 or class_name not in check_table['TableNames']:
         response = dynamodb.create_table(
@@ -80,13 +80,32 @@ def create_class_table(class_name):
 
 def delete_table(table_name):
     dynamodb = boto3.resource('dynamodb')
+    dynamodb.delete_table(TableName=table_name)
+    
+    '''
     table = dynamodb.Table(table_name)
     table.delete()
     return print("Tabla eliminada")
-
+    '''
 
 def save_asistance_register(table_name, data):
     dynamodb = boto3.resource('dynamodb')
+    print("Agregando valores a tabla: ", data)
+    #No quiero que llegues y apliques esto de una, podrias arruinar todo si no sabes bien lo que estas haciendo
+    #que estas guardando aqui y como?
+    dynamodb.put_item(
+        TableName=table_name, 
+        Item={
+            'curso': data['curso'],
+            'nombre': data['nombre'],
+            'fecha': data['fecha'],
+            'hora': data['hora'],
+            'rekog_value': data['rekog_value']
+        }
+    )
+    print("Done")
+    
+    '''
     table = dynamodb.Table('table_name')
     print("Agregando valores a tabla: ", data)
     table.put_item(
@@ -99,7 +118,7 @@ def save_asistance_register(table_name, data):
         }
     )
     print("Done")
-
+    '''
 
 def consult_asistance(value, table_name):
     dynamodb = boto3.resource('dynamodb')
