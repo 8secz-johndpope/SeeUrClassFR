@@ -9,7 +9,7 @@ def create_table_class(class_name):
         KeySchema=[
             {
                 'AttributeName': 'curso',
-                'KeyType': 'HASH'  # Partition key
+                'KeyType': 'HASH'
             },
         ],
         AttributeDefinitions=[

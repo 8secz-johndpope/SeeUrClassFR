@@ -1,4 +1,3 @@
-from __future__ import print_function  # Python 2/3 compatibility
 import boto3
 from boto3.dynamodb.conditions import Key, Attr
 
@@ -10,7 +9,7 @@ def create_table_class_assistance(class_name):
         KeySchema = [
             {
                 'AttributeName': 'curso',
-                'KeyType': 'HASH'  # Partition key
+                'KeyType': 'HASH'
             },
             {
                 'AttributeName': 'hora',
@@ -35,11 +34,26 @@ def create_table_class_assistance(class_name):
     print("Table status:", table.table_status)
 
 
-def createDynamoTable(tableName):
-    check_table = dynamodb.list_tables()
-    print(tableName, tableCheck['TableNames'])
+def get_name(institution_bucket, face_id):
+    dynamodb = boto3.resource('dynamodb')
+    response = dynamodb.get_item(
+        TableName=institution_bucket,
+        Key={
+            'RekognitionId': {
+                'S': face_id,
+            }
+        },
+        ProjectionExpression='FullName'
+    )
+    return response['Item']['FullName']['S']
 
-    if len(check_table['TableNames']) == 0 or tableName not in check_table['TableNames']:
+
+def create_class_table(class_name):
+    dynamodb = boto3.resource('dynamodb')
+    check_table = dynamodb.list_tables()
+    print(class_name, check_table['TableNames'])
+
+    if len(check_table['TableNames']) == 0 or class_name not in check_table['TableNames']:
         response = dynamodb.create_table(
             AttributeDefinitions=[
                 {
@@ -47,7 +61,7 @@ def createDynamoTable(tableName):
                     'AttributeType': 'S'
                 }
             ],
-            TableName=tableName,
+            TableName=class_name,
             KeySchema=[
                 {
                     'AttributeName': 'RekognitionId',
@@ -59,9 +73,9 @@ def createDynamoTable(tableName):
                 'WriteCapacityUnits': 5
             }
         )
-        print('Dynamo Table ' + tableName + ' fue creada exitosamente!')
+        print('Dynamo Table ' + class_name + ' fue creada exitosamente!')
     else:
-        print('La Tabla ' + tableName + ' ya existe!')
+        print('La Tabla ' + class_name + ' ya existe!')
 
 
 def delete_table(table_name):
@@ -71,9 +85,9 @@ def delete_table(table_name):
     return print("Tabla eliminada")
 
 
-def save_asistance_register(data):
+def save_asistance_register(table_name, data):
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('asistencia_curso')
+    table = dynamodb.Table('table_name')
     print("Agregando valores a tabla: ", data)
     table.put_item(
         Item={
@@ -95,7 +109,3 @@ def consult_asistance(value, table_name):
     for item in items:
         print(item)
    
-
-#delete_table('asistencia_curso')
-#create_table_class('asistencia_curso')
-#consult_asistance('tics3', 'asistencia_curso')
