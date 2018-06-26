@@ -5,17 +5,61 @@ import assistance_table_managment as atm
 from PIL import Image
 rekognition = boto3.client('rekognition', 'us-west-2')
 
-def prepare_faces(class_name, image):
-    encodedimg = pass_to_blob(image)
-    all_faces = multiple_face_detection(encodedimg)
-    image_width, image_height = image.size[0], image.size[1]
-    for face in all_faces:
-        w, h, crop_image = separate_faces(face, image, image_width, image_height)
-        binary = pass_to_blob(crop_image)
+
+def prepare_faces(curso, imageFile):
+    # Pasar imagen a blob
+
+    image = imageFile
+
+    stream = io.BytesIO()
+    image.save(stream, format='JPEG')
+    encodedimg = stream.getvalue()
+    # Conseguir las cajas envolvientes de cada cara detectada
+    response = rekognition.detect_faces(Image={'Bytes': encodedimg})
+    allFaces = response['FaceDetails']
+    allFaceIds = {}  # Crea un diccionario {FaceId: Similarity}
+    # Consigue proporciones del imagen entregado
+    image_width = image.size[0]
+    image_height = image.size[1]
+
+    # Por cada cara detectada...
+    for face in allFaces:
+        # Crea un imagen temporal, que solo consiste en el area de la Caja Envolviente
+        boundingBox = face['BoundingBox']
+        x1 = int(boundingBox['Left'] * image_width) * 0.9
+        y1 = int(boundingBox['Top'] * image_height) * 0.9
+        x2 = int(boundingBox['Left'] * image_width +
+                 boundingBox['Width'] * image_width) * 1.1
+        y2 = int(boundingBox['Top'] * image_height +
+                 boundingBox['Height'] * image_height) * 1.1
+
+        croppredImage = image.crop((x1, y1, x2, y2))
+        w = croppredImage.size[0]
+        h = croppredImage.size[1]
+
         if w >= 80 and h >= 80:
-            return search_faces(binary, class_name)
+            # Pasa este imagen temporal a un blob...
+            stream = io.BytesIO()
+            croppredImage.save(stream, format='JPEG')
+            binary = stream.getvalue()
+
+            # Para luego pasar este imagen singular por Search Faces by Image
+            response = rekognition.search_faces_by_image(
+                CollectionId=curso,
+                Image={'Bytes': binary},
+                FaceMatchThreshold=70  # minimo nivel de aceptacion
+            )
+            if len(response['FaceMatches']) == 0:
+                print('Alumno no del Curso Detectado')
+            else:
+                # Agrega FaceId y Similarity del sujeto encontrado al diccionario
+                allFaceIds[response['FaceMatches'][0]['Face']['FaceId']
+                           ] = response['FaceMatches'][0]['Similarity']
         else:
-            print("Imagen muy peqeueña, descartando...")
+            print('Foto de la persona es muy chica, descartando...')
+
+    return allFaceIds  # Entrega diccionario de caras con su similitud
+
 
 
 def pass_to_blob(image):
@@ -26,6 +70,7 @@ def pass_to_blob(image):
 
 def multiple_face_detection(encodedimg):
     response = rekognition.detect_faces(Image={'Bytes': encodedimg})
+    print(len(response['FaceDetails']))
     return response['FaceDetails']
 
 
