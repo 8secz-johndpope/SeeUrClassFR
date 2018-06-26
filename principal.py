@@ -13,7 +13,7 @@ import class_management as cm
 if __name__ == "__main__":
     institution_bucket = 'instituciondiegoportales'
     imageFile = './instituciondiegoportales/alumno_gustavo_gonzalez.jpg'
-    class_name = 'tic3_2'
+    class_name = 'tic3_1'
     student_name, _ = sm.pars_name(imageFile)
     print(student_name)
     #atm.delete_table(class_name)

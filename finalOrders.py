@@ -5,7 +5,7 @@ import datetime
 import rekogOrders as r
 import s3Orders as s
 import dynamoDBOrders as d
-import class_table_managment as ctm
+import assistance_table_managment as ctm
 
 
 def agregarDetalles(nombre):
@@ -61,22 +61,22 @@ def pruebaAgregarAlCurso(table, curso, listaAlumnos):
 
 if __name__ == "__main__":
     bucket = 'instituciondiegoportales'
-    imageFile = './instituciondiegoportales/alumno_juan_hahn.jpg'
-    table = 'testtic3v2'
-    curso = 'tics3'
-    path = './' + curso + '/'
+    path = './instituciondiegoportales/'
+    #table = 'testtic3v2'
+    curso = 'tic3_1'
+    #path = './' + curso + '/'
     #path = './respaldo_imagees/tics3/'
     valid_images = [".jpg"]
     lista_archivos = os.listdir(path)
-    #for ruta_foto in lista_archivos:
-     #   extension = os.path.splitext(ruta_foto)[1]
-      #  if extension.lower() not in valid_images:
-       #     continue
-        #pruebaRevisarFoto(table, curso, Image.open(os.path.join(path, ruta_foto)))
-        #os.remove(os.path.join(path, ruta_foto))
+    for ruta_foto in lista_archivos:
+        extension = os.path.splitext(ruta_foto)[1]
+        if extension.lower() not in valid_images:
+            continue
+        pruebaRevisarFoto(bucket, curso, Image.open(os.path.join(path, ruta_foto)))
+        os.remove(os.path.join(path, ruta_foto))
 
 
-    s.add_student_s3(bucket, imageFile)
+    #s.add_student_s3(bucket, imageFile)
 
     #print('Guillermo Agregado')
     #alumnos = ['Andrea Nieto', 'Chris Pratt', 'Juan Daniel Hahn Quintanilla']

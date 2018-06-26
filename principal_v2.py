@@ -19,6 +19,5 @@ if __name__ == "__main__":
         ext = os.path.splitext(photo_path)[1]
         if ext.lower() not in valid_images:
             continue
-        fid.verify_face(institution_bucket, class_name,
-                        Image.open(os.path.join(path, photo_path)))
+        fid.verify_face(institution_bucket, class_name, Image.open(os.path.join(path, photo_path)))
         os.remove(os.path.join(path, photo_path))
