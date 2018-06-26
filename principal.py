@@ -18,7 +18,7 @@ if __name__ == "__main__":
     print(student_name)
     #atm.delete_table(class_name)
     #sm.add_student_s3(institution_bucket, imageFile)
-    cm.create_class(class_name)
+    #cm.create_class(class_name)
     #atm.create_class_table(class_name)
     cm.add_student_class(institution_bucket, class_name, student_name)
     
