@@ -11,13 +11,13 @@ import face_identificaction as fid
 
 if __name__ == "__main__":
     institution_bucket = 'instituciondiegoportales'
-    class_name = 'tic3_1'
-    path = './instituciondiegoportales_test/'
+    class_name = 'tic3_v6'
+    path = './'+institution_bucket+'_test/'
     valid_images = [".jpg"]
     file_list = os.listdir(path)
     for photo_path in file_list:
         ext = os.path.splitext(photo_path)[1]
         if ext.lower() not in valid_images:
             continue
-        fid.verify_face(institution_bucket, class_name, Image.open(os.path.join(path, photo_path)))
+        fid.verify_face(class_name, Image.open(os.path.join(path, photo_path)))
         os.remove(os.path.join(path, photo_path))

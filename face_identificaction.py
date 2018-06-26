@@ -15,7 +15,7 @@ def prepare_faces(class_name, image):
         if w >= 80 and h >= 80:
             return search_faces(binary, class_name)
         else:
-            print("Imagen muy peuqueña, descartando...")
+            print("Imagen muy peqeueña, descartando...")
 
 
 def pass_to_blob(image):
@@ -56,7 +56,7 @@ def search_faces(binary, class_name):
     return faces
 
 
-def verify_face(institution_bucket, class_name, image):
+def verify_face(class_name, image):
     face_list = prepare_faces(class_name, image)
     now = datetime.datetime.now()
     date = [now.year, now.month, now.day]
@@ -64,8 +64,8 @@ def verify_face(institution_bucket, class_name, image):
     hour = [now.hour, now.minute, now.second]
     hour_str = ':'.join(str(e) for e in hour)
     if face_list != {}:
-        for key, value in face_list.items():
-            name = atm.get_name(institution_bucket, key)
+        for faceId, value in face_list.items():
+            name = atm.get_name(class_name, faceId)
             rekog_value = str(round(value, 3))
             data = {
                 'curso': class_name,
