@@ -7,4 +7,4 @@ def photo():
     while True:
         camera.capture(path + 'image.jpg')
         sleep(5)
-photo()
+photo
