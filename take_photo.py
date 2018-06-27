@@ -12,4 +12,3 @@ while True:
     camera.capture(file_path)
     i += 1
     
-

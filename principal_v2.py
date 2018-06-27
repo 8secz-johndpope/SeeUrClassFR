@@ -2,7 +2,6 @@ import boto3
 import os
 import os.path
 from PIL import Image
-#from picamera import picamera
 from time import sleep
 import schedule
 import time
@@ -10,7 +9,6 @@ import assistance_table_managment as atm
 import student_management as sm
 import class_management as cm
 import face_identificaction as fid
-import take_photo as tp
 
 
 blocks = {
@@ -37,7 +35,7 @@ if __name__ == "__main__":
                 continue
             fid.verify_face(class_name, Image.open(os.path.join(path, photo_path)))
             os.remove(os.path.join(path, photo_path))
-    schedule.every(2).minutes.do(script)
+    schedule.every(1).minutes.do(script)
     while True:
         schedule.run_pending()
         time.sleep(1)

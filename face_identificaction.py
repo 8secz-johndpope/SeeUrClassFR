@@ -8,9 +8,7 @@ rekognition = boto3.client('rekognition', 'us-west-2')
 
 def prepare_faces(curso, imageFile):
     # Pasar imagen a blob
-
     image = imageFile
-
     stream = io.BytesIO()
     image.save(stream, format='JPEG')
     encodedimg = stream.getvalue()
@@ -42,19 +40,20 @@ def prepare_faces(curso, imageFile):
             stream = io.BytesIO()
             croppredImage.save(stream, format='JPEG')
             binary = stream.getvalue()
-
-            # Para luego pasar este imagen singular por Search Faces by Image
-            response = rekognition.search_faces_by_image(
-                CollectionId=curso,
-                Image={'Bytes': binary},
-                FaceMatchThreshold=70  # minimo nivel de aceptacion
-            )
-            if len(response['FaceMatches']) == 0:
-                print('Alumno no del Curso Detectado')
-            else:
-                # Agrega FaceId y Similarity del sujeto encontrado al diccionario
-                allFaceIds[response['FaceMatches'][0]['Face']['FaceId']
-                           ] = response['FaceMatches'][0]['Similarity']
+            try:
+                # Para luego pasar este imagen singular por Search Faces by Image
+                response = rekognition.search_faces_by_image(
+                    CollectionId=curso,
+                    Image={'Bytes': binary},
+                    FaceMatchThreshold=70  # minimo nivel de aceptacion
+                )
+                if len(response['FaceMatches']) == 0:
+                    print('Alumno no del Curso Detectado')
+                else:
+                    # Agrega FaceId y Similarity del sujeto encontrado al diccionario
+                    allFaceIds[response['FaceMatches'][0]['Face']['FaceId']] = response['FaceMatches'][0]['Similarity']
+            except:
+                print("No se detectan rostros en la imagen")           
         else:
             print('Foto de la persona es muy chica, descartando...')
 
