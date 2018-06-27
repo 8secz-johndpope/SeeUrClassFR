@@ -19,8 +19,3 @@ def ReadDistance(pin):
     # Distance is defined as time/2 (there and back) * speed of sound 34000 cm/s
     distance = duration*34000/2
     return distance
-while True:
-   distance = ReadDistance(11)
-   print("cuarta entrada")
-   print("Distance to object is ", distance, " cm or ", distance*.3937, " inches")
-   time.sleep(.5)

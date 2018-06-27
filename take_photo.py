@@ -1,13 +1,16 @@
 from picamera import PiCamera
 from time import sleep
+import take_distance as tdis
+
+
 camera = PiCamera()
 institution_bucket = 'instituciondiegoportales'
 path = './'+institution_bucket+'_test/'
 i = 0
 while True:
     file_path = path + 'image{}.jpg'.format(i)
-    print(file_path)
-    sleep(5)
-    camera.capture(file_path)
-    i += 1
-    
+    distance = tdis.ReadDistance(11)
+    if distance < 200:
+        camera.capture(file_path)
+        sleep(1)
+        i += 1
