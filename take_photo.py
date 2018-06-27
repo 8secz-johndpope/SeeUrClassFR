@@ -5,5 +5,6 @@ def photo():
     institution_bucket = 'instituciondiegoportales'
     path = './'+institution_bucket+'_test/'
     while True:
-        camera.capture(path)
+        camera.capture(path + 'image.jpg')
         sleep(5)
+photo()
