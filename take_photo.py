@@ -2,7 +2,7 @@ from picamera import PiCamera
 from time import sleep
 
 
-camera = PiCamera
+camera = PiCamera()
 institution_bucket = 'instituciondiegoportales'
 path = './'+institution_bucket+'_test/'
-camera.capture(path)
+camera.capture(path + 'foto_test.jpg')
