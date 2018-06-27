@@ -4,4 +4,6 @@ def photo():
     camera = PiCamera
     institution_bucket = 'instituciondiegoportales'
     path = './'+institution_bucket+'_test/'
-    camera.capture(path)
+    while True:
+        camera.capture(path)
+        sleep(5)
