@@ -35,5 +35,5 @@ def ReadDistance(pin):
 
 while True:
    distance = ReadDistance(11)
-   print "Distance to object is ", distance, " cm or ", distance*.3937, " inches"
+   print("Distance to object is ", distance, " cm or ", distance*.3937, " inches")
    time.sleep(.5)
