@@ -55,3 +55,4 @@ def add_student_class(institution_bucket, class_name, student_name):
     student_full_name = get_name_s3(institution_bucket, student_name)
     update_index(class_name, FID, student_full_name)
     print('Alumno ' + student_full_name + ' agregado al curso ' + class_name)
+

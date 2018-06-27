@@ -100,24 +100,40 @@ def search_faces(binary, class_name):
     return faces
 
 
-def verify_face(class_name, image):
+def get_students_class(class_name):
+    try:
+        response = rekognition.list_faces(CollectionId=class_name)['Faces']
+    except Exception:
+        print('ERROR: El curso ' + class_name + ' no existe!')
+        return {}
+    allFaceIds = {}
+    for element in response:
+        allFaceIds[atm.get_name(class_name, element['FaceId'])] = False
+    return allFaceIds
+
+
+def verify_face(class_name, image, student_list):
     face_list = prepare_faces(class_name, image)
     now = datetime.datetime.now()
     date = [now.year, now.month, now.day]
     date_str = '-'.join(str(e) for e in date)
     hour = [now.hour, now.minute, now.second]
     hour_str = ':'.join(str(e) for e in hour)
+    
     if face_list != {}:
         for faceId, value in face_list.items():
             name = atm.get_name(class_name, faceId)
-            rekog_value = str(round(value, 3))
-            data = {
-                'curso': class_name,
-                'nombre': name,
-                'fecha': date_str,
-                'hora': hour_str,
-                'rekog_value': rekog_value
-            }
-            atm.save_asistance_register(class_name, data)
+            if student_list[name] == False:
+                student_list[name] = True
+                rekog_value = str(round(value, 3))
+                data = {
+                    'curso': class_name,
+                    'nombre': name,
+                    'fecha': date_str,
+                    'hora': hour_str,
+                    'rekog_value': rekog_value
+                }
+                atm.save_asistance_register(class_name, data)
     else:
         print('No hubo coincidencia')
+    return student_list
