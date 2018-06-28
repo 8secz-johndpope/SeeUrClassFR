@@ -124,6 +124,7 @@ def verify_face(class_name, image, student_list):
         for faceId, value in face_list.items():
             name = atm.get_name(class_name, faceId)
             if student_list[name] == False:
+                print("Alumno detectado")
                 student_list[name] = True
                 rekog_value = str(round(value, 3))
                 data = {
@@ -134,6 +135,8 @@ def verify_face(class_name, image, student_list):
                     'rekog_value': rekog_value
                 }
                 atm.save_asistance_register(class_name, data)
+            else:
+                print("Alumno ya se encuentra en el curso")
     else:
         print('No hubo coincidencia')
     return student_list

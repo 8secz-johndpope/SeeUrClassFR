@@ -9,7 +9,6 @@ import assistance_table_managment as atm
 import student_management as sm
 import class_management as cm
 import face_identificaction as fid
-import take_distance as tdis
 
 
 blocks = {
@@ -44,7 +43,7 @@ if __name__ == "__main__":
     class_name = 'tic3_v6'
     path = './'+institution_bucket+'_test/'
     student_list = get_students_class_day(class_name)
-    schedule.every(1).minutes.do(script(student_list))
+    schedule.every(1).minutes.do(script, student_list)
     #student_list = schedule.every(120).minutes.do(get_students_class_day(class_name))
     while True:
         schedule.run_pending()
