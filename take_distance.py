@@ -28,3 +28,4 @@ while True:
         tpho.take_photo(i)
         i += 1
     time.sleep(.5)
+
